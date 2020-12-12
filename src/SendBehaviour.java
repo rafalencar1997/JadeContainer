@@ -1,3 +1,5 @@
+package myAgents;
+
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -18,14 +20,16 @@ public class SendBehaviour extends CyclicBehaviour {
     private Node actualNode = null;
     private int nReceivers = 0;
     private int nMessages = 0;
+    private int sizeMessages = 1;
     private int count = 0;
     public Writer writer;
 
     public SendBehaviour(Agent a, Object[] args) {
         super(a);
-        this.nMessages = (int)args[0];
-        this.nReceivers = (int)args[1];
-        this.actualNode = (Node)args[2];
+        this.nMessages    = (int)args[0];
+        this.sizeMessages = (int)args[1];
+        this.nReceivers   = (int)args[2];
+        this.actualNode   = (Node)args[3];
 
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
@@ -44,6 +48,7 @@ public class SendBehaviour extends CyclicBehaviour {
         receiver.addAddresses(actualNode.Address);
         msg.addReceiver(receiver);
         msg.setContent("Msg" + count);
+        
 
         // set a template with receiver and performative
         MessageTemplate mp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
@@ -56,19 +61,16 @@ public class SendBehaviour extends CyclicBehaviour {
         ACLMessage reply = myAgent.receive(mt);
         while(reply == null) reply = myAgent.receive();
         if (reply != null) {
-            System.out.println(myAgent.getLocalName() + 
-								") Resposta Recebida por "+
-								reply.getSender().getLocalName() + 
-								" às " + new Timestamp(reply.getPostTimeStamp()));
             long end = System.currentTimeMillis();    
             long result = end-start;
-            try {writer.write(count+","+result+"\n");} 
+            try {writer.write(actualNode.Address+","+result+"\n");} 
             catch (IOException e) {e.printStackTrace();}
         }
         if(count >= nMessages*nReceivers){
             try {writer.close();}
             catch (IOException e) {e.printStackTrace();}
             myAgent.doDelete();
+            System.out.println("Fim do Experimento");
         }
         this.actualNode = this.actualNode.nextNode;
     }

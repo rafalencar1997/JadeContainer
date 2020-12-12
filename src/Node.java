@@ -1,3 +1,5 @@
+package myAgents;
+
 class Node {
  
     String AID;

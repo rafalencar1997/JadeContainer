@@ -20,18 +20,17 @@ do
     sudo amazon-linux-extras install docker
     sudo usermod -a -G docker ec2-user
     logout
-    service docker start
-    docker pull rafalencar18/jadecontainer
-    docker run -t -d
-        -p 8080:7778  
-        -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" 
+    sudo service docker start
+    docker run -t -d \
+        -p 8080:7778  \
+        -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
         --name container rafalencar18/jadecontainer
 done
+docker exec -it container /bin/bash 
 
 for i in {0..$N_HOSTS};
 do
-    docker exec container 
-        java jade.Boot -agents 'S:SenderAgent;R:ReceiverAgent' -platform-id Platform   
+    docker exec container java jade.Boot -agents 'S:myAgents.SenderAgent;R:myAgents.ReceiverAgent' -platform-id Platform   
 done
 
 for i in {0..$N_HOSTS};

@@ -30,11 +30,11 @@ docker push rafalencar18/jadecontainer
 ```
 Criada a imagem, rodamos o container com o comando abaixo, lembrando de fazer o bind as portas do container e da máquina:
 ```
-docker run -p port:7778 -t -d --name jadeDemo rafalencar18/jadecontainer
+docker run -p port:7778 -t -d --name container rafalencar18/jadecontainer
 ```
 E por fim, podemos entrar dentro do container com o seguinte comando:
 ```
-docker exec -it jadeDemo /bin/bash 
+docker exec -it container /bin/bash 
 ```
 
 
@@ -83,6 +83,14 @@ De um logout da instância e conecte novamente
 ```
 service docker start
 docker pull rafalencar18/jadecontainer
+
+```
+
+Caso queira remover o container:
+```
+docker kill container 
+docker rm container
+
 ```
 
 ## Lista com links úteis:
