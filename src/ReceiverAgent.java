@@ -10,10 +10,10 @@ public class ReceiverAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 
 	protected void setup() {
-		String myAddress = "http://"+System.getenv("HOST_IP")+":8080/acc";
+		String address = getName().split("@")[1].split("/")[0];
+		String myAddress = "http://"+address+"/acc";
 		getAID().addAddresses(myAddress);
 		getAID().removeAddresses(getAID().getAddressesArray()[0]);
-		System.out.println("Hello World");
 		System.out.println("All my info: \n" + getAID());
 
 		addBehaviour(new CyclicBehaviour(this){
@@ -24,9 +24,7 @@ public class ReceiverAgent extends Agent {
 				ACLMessage msg = myAgent.receive();
 				if(msg != null) {
 					ACLMessage reply = msg.createReply();
-					String content = msg.getContent();
 					reply.setPerformative(ACLMessage.AGREE);
-					reply.setContent("Recebi sua Mensagem");
 					myAgent.send(reply);
 				} 
 				else block();

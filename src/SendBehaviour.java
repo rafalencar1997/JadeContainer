@@ -41,14 +41,23 @@ public class SendBehaviour extends CyclicBehaviour {
         myAgent.doWait(10000);
     }
 
+    public static String randomString(int lenght){
+        String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder builder = new StringBuilder();
+        while(lenght -- != 0){
+            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        }
+        return builder.toString();
+    }
+
     public void action(){
 
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         AID receiver = new AID(actualNode.AID, AID.ISGUID);
         receiver.addAddresses(actualNode.Address);
         msg.addReceiver(receiver);
-        msg.setContent("Msg" + count);
-        
+        msg.setContent(randomString(this.sizeMessages));
 
         // set a template with receiver and performative
         MessageTemplate mp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);

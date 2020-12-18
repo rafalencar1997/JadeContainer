@@ -1,3 +1,0 @@
-MessageSize 1
-NumberMessages 1000
-R@Platform1 http://null:8080/acc
