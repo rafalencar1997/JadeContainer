@@ -4,9 +4,6 @@ FROM openjdk:latest
 # Copia as biliotecas do jade para dentro do container
 COPY ./lib /jade/lib
 
-# Copia os arquivos fontes dos agentes para dentro do container
-COPY ./src /jade/src
-
 # Copia os arquivos compilados dos agentes para dentro do container
 COPY ./bin /jade/bin
 

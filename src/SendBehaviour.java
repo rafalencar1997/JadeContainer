@@ -6,7 +6,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.core.AID;
 import java.sql.Timestamp;
-
+import java.util.Hashtable;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -38,6 +38,12 @@ public class SendBehaviour extends CyclicBehaviour {
         this.nReceivers       = (int)args[4];
         this.actualNode       = (Node)args[5];
 
+        Hashtable<Integer, String> ht = new Hashtable<Integer, String>(); 
+        ht.put(1, "NumberOfHosts");
+        ht.put(2, "NumberOfSender");
+        ht.put(3, "NumberOfPairs");
+        ht.put(4, "AgentsPerHost");
+
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
             new FileOutputStream(
@@ -47,9 +53,16 @@ public class SendBehaviour extends CyclicBehaviour {
                 "_"+this.numberOfAgents+
                 "_"+this.messageSize+
                 "_"+this.numberOfMessages+
-                ".csv")));
+                ".csv"))); 
         } 
         catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        try {
+            writer.write("Address,RTT,MessageSize,NumberOfMessages,"+
+                         ht.get(this.benchmark)+"\n");
+        } 
+        catch (IOException e) {
             e.printStackTrace();
         }
         myAgent.doWait(10000);
