@@ -10,8 +10,9 @@ public class ReceiverAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 
 	protected void setup() {
-		String address = getName().split("@")[1].split("/")[0];
-		String myAddress = "http://"+address+"/acc";
+		String host = getProperty("host", "0");
+		String port = getProperty("port", "0");
+		String myAddress = "http://"+host+":"+port+"/acc";
 		getAID().addAddresses(myAddress);
 		getAID().removeAddresses(getAID().getAddressesArray()[0]);
 		System.out.println("All my info: \n" + getAID());

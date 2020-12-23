@@ -17,23 +17,37 @@ import java.io.Writer;
 public class SendBehaviour extends CyclicBehaviour {
 
     private static final long serialVersionUID = 1L;
+    
+    // Informações do Experimento
+    private int benchmark = 1;
+    private int numberOfAgents = 1;
+    private int numberOfMessages = 0;
+    private int messageSize = 1;
+
     private Node actualNode = null;
     private int nReceivers = 0;
-    private int nMessages = 0;
-    private int sizeMessages = 1;
     private int count = 0;
     public Writer writer;
 
     public SendBehaviour(Agent a, Object[] args) {
         super(a);
-        this.nMessages    = (int)args[0];
-        this.sizeMessages = (int)args[1];
-        this.nReceivers   = (int)args[2];
-        this.actualNode   = (Node)args[3];
+        this.benchmark        = (int)args[0];
+        this.numberOfAgents   = (int)args[1];
+        this.numberOfMessages = (int)args[2];
+        this.messageSize      = (int)args[3];
+        this.nReceivers       = (int)args[4];
+        this.actualNode       = (Node)args[5];
 
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
-            new FileOutputStream("results/"+myAgent.getLocalName()+".csv")));
+            new FileOutputStream(
+                "results/"+
+                "Benchmark"+this.benchmark+"/"+
+                myAgent.getLocalName()+
+                "_"+this.numberOfAgents+
+                "_"+this.messageSize+
+                "_"+this.numberOfMessages+
+                ".csv")));
         } 
         catch (FileNotFoundException e){
             e.printStackTrace();
@@ -57,7 +71,7 @@ public class SendBehaviour extends CyclicBehaviour {
         AID receiver = new AID(actualNode.AID, AID.ISGUID);
         receiver.addAddresses(actualNode.Address);
         msg.addReceiver(receiver);
-        msg.setContent(randomString(this.sizeMessages));
+        msg.setContent(randomString(this.messageSize));
 
         // set a template with receiver and performative
         MessageTemplate mp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
@@ -68,14 +82,23 @@ public class SendBehaviour extends CyclicBehaviour {
         long start = System.currentTimeMillis();
         myAgent.send(msg);
         ACLMessage reply = myAgent.receive(mt);
-        while(reply == null) reply = myAgent.receive();
+        while(reply == null) 
+            reply = myAgent.receive();
         if (reply != null) {
             long end = System.currentTimeMillis();    
             long result = end-start;
-            try {writer.write(actualNode.Address+","+result+"\n");} 
-            catch (IOException e) {e.printStackTrace();}
+            try {
+                writer.write(actualNode.Address+","+
+                             result+","+
+                             this.messageSize+","+
+                             this.numberOfMessages+","+
+                             this.numberOfAgents+"\n");
+            } 
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        if(count >= nMessages*nReceivers){
+        if(count >= numberOfMessages*nReceivers){
             try {writer.close();}
             catch (IOException e) {e.printStackTrace();}
             myAgent.doDelete();
