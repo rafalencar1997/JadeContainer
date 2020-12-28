@@ -14,8 +14,10 @@ public class SenderAgent extends Agent {
 
 	protected void setup() {
 		String name = getName();
-		String host = getProperty("host", "0");
-		String port = getProperty("port", "0");
+		// String host = getProperty("host", "0");
+		// String port = getProperty("port", "0");
+		String host = getArguments()[0].toString();
+		String port = getArguments()[1].toString();
 		String myAddress = "http://"+host+":"+port+"/acc";
 		getAID().addAddresses(myAddress);
 		getAID().removeAddresses(getAID().getAddressesArray()[0]);
@@ -29,21 +31,15 @@ public class SenderAgent extends Agent {
 		int numberOfMessages = Integer.parseInt(getArguments()[6].toString());
 
 		try {
-			File myObj = new File("receivers.txt");
+			File myObj = new File("receivers/Benchmark"+benchmark+"/receivers.txt");
 			Scanner myReader = new Scanner(myObj);
 			String[] data;
-			if(benchmark == 1){
-				while (myReader.hasNextLine()) {
-					data = myReader.nextLine().split(" ");
-					if(!data[1].equals(myAddress)){
-						cll.addNode(data[0], data[1]);
-					}
-				}
-			}
-			else{
-				while (myReader.hasNextLine()) {
-					data = myReader.nextLine().split(" ");
-					if(data[0].charAt(1) == name.charAt(1)){ 
+			
+			for(int i = 0; i < numberOfAgents && myReader.hasNextLine(); i++){
+				data = myReader.nextLine().split(" ");
+				String index = data[0].substring(1);
+				if(index.equals(name.substring(1))){ 
+					if(benchmark > 1 || !data[1].equals(myAddress)){
 						cll.addNode(data[0], data[1]);
 					}
 				}
@@ -57,6 +53,7 @@ public class SenderAgent extends Agent {
 
 		Node n = cll.getHead();
 		for(int i = 0; i < cll.lenght(); i++){
+			System.out.println(n.AID + " " + n.Address);
 			n = n.nextNode;
 		}
 		
@@ -69,6 +66,6 @@ public class SenderAgent extends Agent {
 			cll.getHead()
 		};
 		
-			addBehaviour(new SendBehaviour(this, behavArgs));		
+		// addBehaviour(new SendBehaviour(this, behavArgs));		
 	}
 }

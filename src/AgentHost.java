@@ -23,8 +23,8 @@ public class AgentHost{
         // Create Main Container to host the agents
         Profile p = new ProfileImpl();
 
-        p.setParameter(Profile.MAIN_HOST, host);
-        p.setParameter(Profile.MAIN_PORT, port);
+        // p.setParameter(Profile.MAIN_HOST, host);
+        // p.setParameter(Profile.MAIN_PORT, port);
         p.setParameter(Profile.PLATFORM_ID, platform_id);
         return rt.createMainContainer(p);
     }
@@ -42,17 +42,23 @@ public class AgentHost{
                     case 0:
                         for (int i = 0; i < numberOfAgents; i++){
                             agents.add(cc.createNewAgent("S"+i, "myAgents.SenderAgent", arguments));
-                            agents.add(cc.createNewAgent("R"+i, "myAgents.ReceiverAgent", null));
+                            agents.add(cc.createNewAgent("R"+i, "myAgents.ReceiverAgent", arguments));
                         } 
                     break;
                     case 1:
-                        for (int i = 0; i < numberOfAgents; i++){ 
-                            agents.add(cc.createNewAgent("S"+i, "myAgents.SenderAgent", arguments));
+                        if(arguments.length >= 8){
+                            int index = Integer.parseInt(arguments[7].toString());
+                            agents.add(cc.createNewAgent("S"+index, "myAgents.SenderAgent", arguments));
+                        }
+                        else{
+                            for (int i = 0; i < numberOfAgents; i++){ 
+                                agents.add(cc.createNewAgent("S"+i, "myAgents.SenderAgent", arguments));
+                            }
                         }
                     break;
                     case 2:
                         for (int i = 0; i < numberOfAgents; i++){ 
-                            agents.add(cc.createNewAgent("R"+i, "myAgents.ReceiverAgent", null));
+                            agents.add(cc.createNewAgent("R"+i, "myAgents.ReceiverAgent", arguments));
                         }
                     break;
                 }
@@ -77,13 +83,16 @@ public class AgentHost{
         int agentType        = Integer.parseInt(args[3]);
         int numberOfAgents   = Integer.parseInt(args[4]);
         
-        if(benchmark <= 3 && agentType != RECEIVERS)
+        if(benchmark < 3 || (benchmark == 3 && agentType == SENDERS)){
             numberOfAgents = 1;
-        else
-            numberOfAgents = Integer.parseInt(args[4]);
+        }
 
         int messageSize      = Integer.parseInt(args[5]); 
-        int numberOfMessages = Integer.parseInt(args[6]); 
+        int numberOfMessages = Integer.parseInt(args[6]);
+        
+        if(args.length >= 8){
+            int index = Integer.parseInt(args[7]);
+        }
 
         ContainerController cc = createPlatform(ip, port, "Platform");
         startAgents(cc, agentType, numberOfAgents, args);

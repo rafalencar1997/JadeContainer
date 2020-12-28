@@ -97,7 +97,14 @@ docker pull rafalencar18/jadecontainer
 docker pull rafalencar18/jadecontainer
 ```
 
+4. Alterar lista de receivers
+```
+vi receivers.txt
+```
+
 5. Subir container
+
+6. Copiar lista de receiver para dentro do container
 
 
 7. Rodar comando do AgentHost no container
@@ -107,6 +114,7 @@ docker exec -it java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGEN
 Todos esses itens estão descritos nos comandos a seguir:
 ```
 docker run -p 8080:7778 -t -d --name jadeCont rafalencar18/jadecontainer
+docker cp receivers.txt jadeCont:/jade/bin/receivers.txt
 docker exec -it jadeCont java myAgents.AgentHost "10.0.1.10" "8080" "1" "0" "2"  "1" "2000"
 ```
 
@@ -128,7 +136,7 @@ docker cp jadeCont:/jade/bin/results results
 scp -r ec2-user@52.14.73.156:results resultsX
 ```
 ```
-java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE NUMBEROFMESSAGES INDEX*
+java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE NUMBEROFMESSAGES 
 ```
 ## Benchmark 1
 ```
@@ -146,7 +154,7 @@ java myAgents.AgentHost "10.0.1.10" "8080" "2" "2" "1" "1" "1000"
 ## Benchmark 3
 ```
 # Rodar em N hosts (senders) 
-java myAgents.AgentHost "10.0.1.N" "8080" "3" "1" "1" "1" "1000" "X"
+java myAgents.AgentHost "10.0.1.N" "8080" "3" "1" "1" "1" "1000" 
 
 # Rodar em um host (receivers)
 java myAgents.AgentHost "10.0.1.10" "8080" "3" "2" "N" "1" "1000" 
