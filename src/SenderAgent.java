@@ -53,7 +53,6 @@ public class SenderAgent extends Agent {
 
 		Node n = cll.getHead();
 		for(int i = 0; i < cll.lenght(); i++){
-			System.out.println(n.AID + " " + n.Address);
 			n = n.nextNode;
 		}
 		
@@ -66,6 +65,6 @@ public class SenderAgent extends Agent {
 			cll.getHead()
 		};
 		
-		// addBehaviour(new SendBehaviour(this, behavArgs));		
+		addBehaviour(new SendBehaviour(this, behavArgs));		
 	}
 }

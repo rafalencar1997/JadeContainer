@@ -37,7 +37,6 @@ docker exec -it container /bin/bash
 ```
 
 
-
 ## Rodando os agentes Sender e Receiver dentro do Container
 
 ```
@@ -93,30 +92,29 @@ docker pull rafalencar18/jadecontainer
 2. Adicionar ips privados das máquinas
 
 3. Puxar imagem do docker
-```
-docker pull rafalencar18/jadecontainer
-```
 
-5. Subir container
+4. Subir container
+
+5. Rodar comando do AgentHost no container
 
 
-7. Rodar comando do AgentHost no container
-```
-docker exec -it java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE NUMBEROFMESSAGES 
-```
 Todos esses itens estão descritos nos comandos a seguir:
 ```
 docker run -p 8080:7778 -t -d --name jadeCont rafalencar18/jadecontainer
 docker exec -it jadeCont java myAgents.AgentHost "10.0.1.10" "8080" "1" "0" "2"  "1" "2000"
 ```
 
-Caso queira remover o container:
+
+Facilitando minha vida
 ```
-docker cp jadeCont:/jade/bin/results/Benchmark1/S0_2_1000_1000.csv results/BenchmarkX
+docker cp -a jadeCont:/jade/bin/results .
 docker kill jadeCont 
 docker rm jadeCont
+cls
+docker run -p 8080:7778 -t -d --name jadeCont rafalencar18/jadecontainer
 
 ```
+
 
 8. Copiar arquivos .csv do container para o host
 ```
@@ -125,7 +123,7 @@ docker cp jadeCont:/jade/bin/results results
 
 9. Copiar arquivos .csv do host aws para máquina local
 ```
-scp -r ec2-user@52.14.73.156:results resultsX
+scp -r -i myKeyForJade.pem ec2-user@18.216.22.193:results results
 ```
 ```
 java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE NUMBEROFMESSAGES INDEX*

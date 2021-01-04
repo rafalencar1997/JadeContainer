@@ -44,26 +44,23 @@ public class SendBehaviour extends CyclicBehaviour {
         ht.put(3, "NumberOfPairs");
         ht.put(4, "AgentsPerHost");
 
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(
-            new FileOutputStream(
-                "results/"+
-                "Benchmark"+this.benchmark+"/"+
-                myAgent.getLocalName()+
-                "_"+this.numberOfAgents+
-                "_"+this.messageSize+
-                "_"+this.numberOfMessages+
-                ".csv"))); 
-        } 
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-        try {
-            writer.write("Address,RTT,MessageSize,NumberOfMessages,"+
-                         ht.get(this.benchmark)+"\n");
-        } 
-        catch (IOException e) {
-            e.printStackTrace();
+        if(myAgent.getLocalName().equals("S1")){
+            try {
+                writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(
+                    "results/"+
+                    "Benchmark"+this.benchmark+"/"+
+                    myAgent.getLocalName()+
+                    "_"+this.numberOfAgents+
+                    "_"+this.messageSize+
+                    "_"+this.numberOfMessages+
+                    ".csv"))); 
+                writer.write("Address,RTT,MessageSize,NumberOfMessages,"+
+                            ht.get(this.benchmark)+"\n");
+            } 
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         myAgent.doWait(10000);
     }
@@ -96,24 +93,33 @@ public class SendBehaviour extends CyclicBehaviour {
         myAgent.send(msg);
         ACLMessage reply = myAgent.receive(mt);
         while(reply == null) 
-            reply = myAgent.receive();
+            reply = myAgent.receive(mt);
         if (reply != null) {
             long end = System.currentTimeMillis();    
             long result = end-start;
-            try {
-                writer.write(actualNode.Address+","+
-                             result+","+
-                             this.messageSize+","+
-                             this.numberOfMessages+","+
-                             this.numberOfAgents+"\n");
-            } 
-            catch (IOException e) {
-                e.printStackTrace();
+            if(myAgent.getLocalName().equals("S0")){
+                try {
+                    writer.write(actualNode.Address+","+
+                                result+","+
+                                this.messageSize+","+
+                                this.numberOfMessages+","+
+                                this.numberOfAgents+"\n");
+                } 
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         if(count >= numberOfMessages*nReceivers){
-            try {writer.close();}
-            catch (IOException e) {e.printStackTrace();}
+
+            if(myAgent.getLocalName().equals("S1")){
+                try {
+                    writer.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             myAgent.doDelete();
             System.out.println("Fim do Experimento");
         }

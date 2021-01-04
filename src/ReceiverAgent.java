@@ -27,7 +27,7 @@ public class ReceiverAgent extends Agent {
 				ACLMessage msg = myAgent.receive();
 				if(msg != null) {
 					ACLMessage reply = msg.createReply();
-					reply.setPerformative(ACLMessage.AGREE);
+					reply.setContent(msg.getContent());
 					myAgent.send(reply);
 				} 
 				else block();
