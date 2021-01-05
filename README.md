@@ -74,12 +74,13 @@ Instale o docker nas instâncias com o seguinte comando:
 sudo yum update -y
 sudo amazon-linux-extras install docker
 sudo usermod -a -G docker ec2-user
+
 ```
 De um logout da instância e conecte novamente
 
 ```
-service docker start
-docker pull rafalencar18/jadecontainer
+sudo service docker start
+sudo docker pull rafalencar18/jadecontainer
 
 ```
 
@@ -98,24 +99,22 @@ docker pull rafalencar18/jadecontainer
 5. Rodar comando do AgentHost no container
 
 
-Todos esses itens estão descritos nos comandos a seguir:
-```
-docker run -p 8080:7778 -t -d --name jadeCont rafalencar18/jadecontainer
-docker exec -it jadeCont java myAgents.AgentHost "10.0.1.10" "8080" "1" "0" "2"  "1" "2000"
-```
-
-
 Facilitando minha vida
 ```
-docker cp -a jadeCont:/jade/bin/results .
-docker kill jadeCont 
-docker rm jadeCont
+sudo docker cp -a jadeCont:/jade/bin/results .
+sudo docker kill jadeCont 
+sudo docker rm jadeCont
 cls
-docker run -p 8080:7778 -t -d --name jadeCont rafalencar18/jadecontainer
+sudo docker run -p 8080:7778 -t -d \
+    -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
+    -e HOST_PORT='8080' \
+    --name jadeCont rafalencar18/jadecontainer
+sudo docker exec -it jadeCont java myAgents.AgentHost "1" "2" "1" "2"
 
 ```
-
-
+```
+sudo docker exec -it jadeCont java myAgents.AgentHost "1" "0" "2" "1" "1000"
+```
 8. Copiar arquivos .csv do container para o host
 ```
 docker cp jadeCont:/jade/bin/results results
@@ -131,37 +130,37 @@ java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE N
 ## Benchmark 1
 ```
 # Rodar em N hosts 
-java myAgents.AgentHost "10.0.1.N" "8080" "1" "0" "1" "1" "1000" 
+java myAgents.AgentHost "1" "0" "1" "1" "1000" 
 ```
 ## Benchmark 2
 ```
 # Rodar em N hosts (senders)
-java myAgents.AgentHost "10.0.1.N" "8080" "2" "1" "1" "1" "1000" 
+java myAgents.AgentHost "2" "1" "1" "1" "1000" 
 
 # Rodar em um host (receiver)
-java myAgents.AgentHost "10.0.1.10" "8080" "2" "2" "1" "1" "1000" 
+java myAgents.AgentHost "2" "2" "1" "1" "1000" 
 ```
 ## Benchmark 3
 ```
 # Rodar em N hosts (senders) 
-java myAgents.AgentHost "10.0.1.N" "8080" "3" "1" "1" "1" "1000" "X"
+java myAgents.AgentHost "3" "1" "1" "1" "1000"
 
 # Rodar em um host (receivers)
-java myAgents.AgentHost "10.0.1.10" "8080" "3" "2" "N" "1" "1000" 
+java myAgents.AgentHost "3" "2" "N" "1" "1000" 
 ```
 ## Benchmark 4
 Para o primeiro experimento:
 ```
 # Rodar em um host 
-java myAgents.AgentHost "10.0.1.N" "8080" "4" "0" "N" "1" "1000"
+java myAgents.AgentHost "4" "0" "N" "1" "1000"
 ```
 Para o segundo experimento:
 ```
 # Rodar em um host (sender)
-java myAgents.AgentHost "10.0.1.10" "8080" "4" "1" "N" "1" "1000" 
+java myAgents.AgentHost "4" "1" "N" "1" "1000" 
 
 # Rodar em outro host (receiver)
-java myAgents.AgentHost "10.0.1.11" "8080" "4" "2" "N" "1" "1000" 
+java myAgents.AgentHost "4" "2" "N" "1" "1000" 
 ```
 
 ## Lista com links úteis:

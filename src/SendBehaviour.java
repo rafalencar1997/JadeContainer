@@ -43,8 +43,9 @@ public class SendBehaviour extends CyclicBehaviour {
         ht.put(2, "NumberOfSender");
         ht.put(3, "NumberOfPairs");
         ht.put(4, "AgentsPerHost");
+        ht.put(5, "AgentsPerHost");
 
-        if(myAgent.getLocalName().equals("S1")){
+        if(myAgent.getLocalName().equals("S0")){
             try {
                 writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(
@@ -91,6 +92,7 @@ public class SendBehaviour extends CyclicBehaviour {
         count += 1;
         long start = System.currentTimeMillis();
         myAgent.send(msg);
+
         ACLMessage reply = myAgent.receive(mt);
         while(reply == null) 
             reply = myAgent.receive(mt);
@@ -110,9 +112,12 @@ public class SendBehaviour extends CyclicBehaviour {
                 }
             }
         }
+        if(count == numberOfMessages*nReceivers/2){
+            System.out.println("Metade do Experimento: " + myAgent.getLocalName());
+        }
         if(count >= numberOfMessages*nReceivers){
 
-            if(myAgent.getLocalName().equals("S1")){
+            if(myAgent.getLocalName().equals("S0")){
                 try {
                     writer.close();
                 }
@@ -121,7 +126,7 @@ public class SendBehaviour extends CyclicBehaviour {
                 }
             }
             myAgent.doDelete();
-            System.out.println("Fim do Experimento");
+            System.out.println("Fim do Experimento: " + myAgent.getLocalName());
         }
         this.actualNode = this.actualNode.nextNode;
     }

@@ -17,20 +17,18 @@ public class AgentHost{
     public static final int SENDERS = 1;
     public static final int RECEIVERS = 2;
 
-    public static ContainerController createPlatform(String host, String port, String platform_id){ 
+    public static ContainerController createPlatform(String platform_id){ 
         // Retrieve the singleton instance of the JADE Runtime
         Runtime rt = Runtime.instance();
         // Create Main Container to host the agents
         Profile p = new ProfileImpl();
-
-        // p.setParameter(Profile.MAIN_HOST, host);
-        // p.setParameter(Profile.MAIN_PORT, port);
         p.setParameter(Profile.PLATFORM_ID, platform_id);
         return rt.createMainContainer(p);
     }
 
     public static List<AgentController> startAgents(
             ContainerController cc, 
+            int benchmark,
             int agentType, 
             int numberOfAgents,
             Object[] arguments) {
@@ -46,8 +44,9 @@ public class AgentHost{
                         } 
                     break;
                     case 1:
-                        if(arguments.length >= 8){
-                            int index = Integer.parseInt(arguments[7].toString());
+                        if(benchmark == 3){
+                            String ip = arguments[0].toString();
+                            String index = Integer.toString(Integer.parseInt(ip.substring(ip.length()-1))-1);
                             agents.add(cc.createNewAgent("S"+index, "myAgents.SenderAgent", arguments));
                         }
                         else{
@@ -77,24 +76,28 @@ public class AgentHost{
 
     public static void main(String[] args) {
 
-        String ip            = args[0];
-        String port          = args[1];
-        int benchmark        = Integer.parseInt(args[2]);
-        int agentType        = Integer.parseInt(args[3]);
-        int numberOfAgents   = Integer.parseInt(args[4]);
+        String ip            = System.getenv("HOST_IP");
+        String port          = System.getenv("HOST_PORT");
+        int index            = Integer.parseInt(ip.substring(ip.length()-1))-1;
+        int benchmark        = Integer.parseInt(args[0]);
+        int numberOfAgents   = Integer.parseInt(args[1]);
+        
+        int agentType = 0;
+        if(benchmark > 1 && benchmark < 5){
+            if(index >= 0){
+                agentType = 1;
+            }
+            else{
+                agentType = 2;
+            }
+        }
         
         if(benchmark < 3 || (benchmark == 3 && agentType == SENDERS)){
             numberOfAgents = 1;
         }
 
-        int messageSize      = Integer.parseInt(args[5]); 
-        int numberOfMessages = Integer.parseInt(args[6]);
-        
-        if(args.length >= 8){
-            int index = Integer.parseInt(args[7]);
-        }
-
-        ContainerController cc = createPlatform(ip, port, "Platform");
-        startAgents(cc, agentType, numberOfAgents, args);
+        String[] arguments = {ip, port, args[0], Integer.toString(agentType), args[1] , args[2] , args[3]};
+        ContainerController cc = createPlatform("Platform");
+        startAgents(cc, benchmark, agentType, numberOfAgents, arguments);
     }
 }
