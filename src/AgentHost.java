@@ -97,7 +97,7 @@ public class AgentHost{
         }
 
         String[] arguments = {ip, port, args[0], Integer.toString(agentType), args[1] , args[2] , args[3]};
-        ContainerController cc = createPlatform("Platform");
+        ContainerController cc = createPlatform("Platform"+ip.substring(ip.length()-1));
         startAgents(cc, benchmark, agentType, numberOfAgents, arguments);
     }
 }

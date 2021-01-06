@@ -109,12 +109,10 @@ sudo docker run -p 8080:7778 -t -d \
     -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
     -e HOST_PORT='8080' \
     --name jadeCont rafalencar18/jadecontainer
-sudo docker exec -it jadeCont java myAgents.AgentHost "1" "2" "1" "2"
+sudo docker exec -it jadeCont java myAgents.AgentHost "Benchmark" "Number of Agents" "Message Size" "Number of Messages"
 
 ```
-```
-sudo docker exec -it jadeCont java myAgents.AgentHost "1" "0" "2" "1" "1000"
-```
+
 8. Copiar arquivos .csv do container para o host
 ```
 docker cp jadeCont:/jade/bin/results results

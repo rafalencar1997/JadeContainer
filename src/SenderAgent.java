@@ -13,9 +13,7 @@ public class SenderAgent extends Agent {
 	private CircularLinkedList cll = new CircularLinkedList();
 
 	protected void setup() {
-		String name = getName();
-		// String host = getProperty("host", "0");
-		// String port = getProperty("port", "0");
+		String indexS = getName().substring(1).split("@")[0];
 		String host = getArguments()[0].toString();
 		String port = getArguments()[1].toString();
 		String myAddress = "http://"+host+":"+port+"/acc";
@@ -37,8 +35,8 @@ public class SenderAgent extends Agent {
 			
 			for(int i = 0; i < numberOfAgents && myReader.hasNextLine(); i++){
 				data = myReader.nextLine().split(" ");
-				String index = data[0].substring(1);
-				if(index.equals(name.substring(1))){ 
+				String indexR = data[0].substring(1).split("@")[0];
+				if(indexS.equals(indexR)){ 
 					if(benchmark > 1 || !data[1].equals(myAddress)){
 						cll.addNode(data[0], data[1]);
 					}

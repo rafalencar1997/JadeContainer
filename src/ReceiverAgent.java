@@ -10,8 +10,6 @@ public class ReceiverAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 
 	protected void setup() {
-		// String host = getProperty("host", "0");
-		// String port = getProperty("port", "0");
 		String host = getArguments()[0].toString();
 		String port = getArguments()[1].toString();
 		String myAddress = "http://"+host+":"+port+"/acc";
