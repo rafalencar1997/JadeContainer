@@ -93,10 +93,10 @@ public class SendBehaviour extends CyclicBehaviour {
         long start = System.currentTimeMillis();
         myAgent.send(msg);
 
-        // block();
+        block();
         ACLMessage reply = myAgent.receive(mt);
-        while(reply == null) 
-            reply = myAgent.receive(mt);
+        // while(reply == null) 
+        //     reply = myAgent.receive(mt);
         if (reply != null) {
             long end = System.currentTimeMillis();    
             long result = end-start;
