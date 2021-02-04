@@ -13,7 +13,12 @@ public class SenderAgent extends Agent {
 	private CircularLinkedList cll = new CircularLinkedList();
 
 	protected void setup() {
-		String indexS = getName().substring(1).split("@")[0];
+		String name = getName().split("@")[0];
+		String platform = getName().split("@")[1];
+
+		String indexName = name.substring(name.length() - 1);
+		String indexPlat = platform.substring(platform.length() - 1);
+
 		String host = getArguments()[0].toString();
 		String port = getArguments()[1].toString();
 		String myAddress = "http://"+host+":"+port+"/acc";
@@ -28,31 +33,41 @@ public class SenderAgent extends Agent {
 		int messageSize      = Integer.parseInt(getArguments()[5].toString());
 		int numberOfMessages = Integer.parseInt(getArguments()[6].toString());
 
-		try {
-			File myObj = new File("receivers/Benchmark"+benchmark+"/receivers.txt");
-			Scanner myReader = new Scanner(myObj);
-			String[] data;
-			
-			for(int i = 0; i < numberOfAgents && myReader.hasNextLine(); i++){
-				data = myReader.nextLine().split(" ");
-				String indexR = data[0].substring(1).split("@")[0];
-				if(indexS.equals(indexR)){ 
-					if(benchmark > 1 || !data[1].equals(myAddress)){
-						cll.addNode(data[0], data[1]);
-					}
+		if(benchmark == 1){
+			for(int i = 0; i < numberOfAgents; i++){
+				if(!String.valueOf(i).equals(indexPlat)){	
+					String receiver_host = String.valueOf(10+i);
+					String receiver_address = "http://10.0.1."+receiver_host+":"+port+"/acc";
+					String receiver_name = "R"+i+"@Platform"+i;
+					cll.addNode(receiver_name, receiver_address);
 				}
 			}
-			myReader.close();
-		} 
-		catch (FileNotFoundException e) {
-			System.err.println("An error occurred.");
-			e.printStackTrace();
+		}
+		else{
+			if(benchmark == 2){
+				String receiver_name = "R0@Platform0";
+				String receiver_address = "http://10.0.1.10:"+port+"/acc";
+				cll.addNode(receiver_name, receiver_address);
+			}
+			else{
+				if(benchmark == 3){
+					String receiver_name = "R"+indexName+"@Platform0";
+					String receiver_address = "http://10.0.1.10:"+port+"/acc";
+					cll.addNode(receiver_name, receiver_address);
+				}
+				else{
+					String receiver_name = "R"+indexName+"@Platform0";
+					String receiver_address = "http://10.0.1.10:"+port+"/acc";
+					cll.addNode(receiver_name, receiver_address);
+				}
+			}	
 		}
 
-		Node n = cll.getHead();
-		for(int i = 0; i < cll.lenght(); i++){
-			n = n.nextNode;
-		}
+		// Node n = cll.getHead();
+		// for(int i = 0; i < cll.lenght(); i++){
+		// 	System.out.println(n.AID + " " +n.Address);
+		// 	n = n.nextNode;
+		// }
 		
 		Object[] behavArgs = {
 			benchmark,

@@ -73,14 +73,16 @@ Instale o docker nas instâncias com o seguinte comando:
 ```
 sudo yum update -y
 sudo amazon-linux-extras install docker
-sudo usermod -a -G docker ec2-user
 
 ```
 De um logout da instância e conecte novamente
 
 ```
+sudo usermod -a -G docker ec2-user
 sudo service docker start
+alias cls="clear"
 sudo docker pull rafalencar18/jadecontainer
+cls
 
 ```
 
@@ -109,7 +111,7 @@ sudo docker run -p 8080:7778 -t -d \
     -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
     -e HOST_PORT='8080' \
     --name jadeCont rafalencar18/jadecontainer
-sudo docker exec -it jadeCont java myAgents.AgentHost "1" "2" "1" "2"
+sudo docker exec -it jadeCont java myAgents.AgentHost "2" "9" "1000" "1000"
 
 ```
 ```
@@ -130,38 +132,32 @@ java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE N
 ## Benchmark 1
 ```
 # Rodar em N hosts 
-java myAgents.AgentHost "1" "0" "1" "1" "1000" 
+java myAgents.AgentHost "1" "N" "1" "1000" 
 ```
 ## Benchmark 2
 ```
 # Rodar em N hosts (senders)
-java myAgents.AgentHost "2" "1" "1" "1" "1000" 
-
-# Rodar em um host (receiver)
-java myAgents.AgentHost "2" "2" "1" "1" "1000" 
+java myAgents.AgentHost "2" "N" "1" "1000" 
 ```
+
 ## Benchmark 3
 ```
 # Rodar em N hosts (senders) 
-java myAgents.AgentHost "3" "1" "1" "1" "1000"
-
-# Rodar em um host (receivers)
-java myAgents.AgentHost "3" "2" "N" "1" "1000" 
+java myAgents.AgentHost "3" "N" "1" "1000"
 ```
+
 ## Benchmark 4
 Para o primeiro experimento:
 ```
 # Rodar em um host 
-java myAgents.AgentHost "4" "0" "N" "1" "1000"
+java myAgents.AgentHost "4" "N" "1" "1000"
 ```
 Para o segundo experimento:
 ```
 # Rodar em um host (sender)
-java myAgents.AgentHost "4" "1" "N" "1" "1000" 
-
-# Rodar em outro host (receiver)
-java myAgents.AgentHost "4" "2" "N" "1" "1000" 
+java myAgents.AgentHost "5" "N" "1" "1000" 
 ```
+
 
 ## Lista com links úteis:
 - [First programs in JADE](https://www.iro.umontreal.ca/~vaucher/Agents/Jade/primer2.html);
