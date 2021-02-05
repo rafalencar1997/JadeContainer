@@ -46,7 +46,7 @@ public class AgentHost{
                     case 1:
                         if(benchmark == 3){
                             String ip = arguments[0].toString();
-                            String index = Integer.toString(Integer.parseInt(ip.substring(ip.length()-1))-1);
+                            String index = Integer.toString(Integer.parseInt(ip.substring(ip.length()-2))-1);
                             agents.add(cc.createNewAgent("S"+index, "myAgents.SenderAgent", arguments));
                         }
                         else{
@@ -78,13 +78,13 @@ public class AgentHost{
 
         String ip            = System.getenv("HOST_IP");
         String port          = System.getenv("HOST_PORT");
-        int index            = Integer.parseInt(ip.substring(ip.length()-1))-1;
+        int index            = Integer.parseInt(ip.substring(ip.length()-2));
         int benchmark        = Integer.parseInt(args[0]);
         int numberOfAgents   = Integer.parseInt(args[1]);
         
         int agentType = 0;
         if(benchmark > 1 && benchmark < 5){
-            if(index >= 0){
+            if(index > 10){
                 agentType = 1;
             }
             else{
