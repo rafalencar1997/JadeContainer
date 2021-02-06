@@ -44,15 +44,8 @@ public class AgentHost{
                         } 
                     break;
                     case 1:
-                        if(benchmark == 3){
-                            String ip = arguments[0].toString();
-                            String index = Integer.toString(Integer.parseInt(ip.substring(ip.length()-2))-1);
-                            agents.add(cc.createNewAgent("S"+index, "myAgents.SenderAgent", arguments));
-                        }
-                        else{
-                            for (int i = 0; i < numberOfAgents; i++){ 
-                                agents.add(cc.createNewAgent("S"+i, "myAgents.SenderAgent", arguments));
-                            }
+                        for (int i = 0; i < numberOfAgents; i++){ 
+                            agents.add(cc.createNewAgent("S"+i, "myAgents.SenderAgent", arguments));
                         }
                     break;
                     case 2:
@@ -76,27 +69,32 @@ public class AgentHost{
 
     public static void main(String[] args) {
 
-        String ip            = System.getenv("HOST_IP");
-        String port          = System.getenv("HOST_PORT");
-        int index            = Integer.parseInt(ip.substring(ip.length()-2));
-        int benchmark        = Integer.parseInt(args[0]);
-        int numberOfAgents   = Integer.parseInt(args[1]);
+        String ip             = System.getenv("HOST_IP");
+        String port           = System.getenv("HOST_PORT");
+        int index             = Integer.parseInt(ip.substring(ip.length()-2));
+        int benchmark         = Integer.parseInt(args[0]);
+        int numberOfHosts     = Integer.parseInt(args[1]);
+        int numberOfSenders   = Integer.parseInt(args[2]);
+        int numberOfReceivers = Integer.parseInt(args[3]);
         
         int agentType = 0;
+        int numberOfAgents = numberOfReceivers;
         if(benchmark > 1 && benchmark < 5){
             if(index > 10){
                 agentType = 1;
+                numberOfAgents = numberOfSenders;
             }
             else{
                 agentType = 2;
+                numberOfAgents = numberOfReceivers;
             }
         }
         
-        if(benchmark < 3 || (benchmark == 3 && agentType == SENDERS)){
+        if(benchmark == 1 || (benchmark == 2 && agentType == RECEIVERS)){
             numberOfAgents = 1;
         }
 
-        String[] arguments = {ip, port, args[0], Integer.toString(agentType), args[1] , args[2] , args[3]};
+        String[] arguments = {ip, port, args[0], Integer.toString(agentType), args[1] , args[2] , args[3], args[4], args[5]};
         ContainerController cc = createPlatform("Platform"+ip.substring(ip.length()-1));
         startAgents(cc, benchmark, agentType, numberOfAgents, arguments);
     }

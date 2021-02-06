@@ -19,31 +19,28 @@ public class SendBehaviour extends CyclicBehaviour {
     private static final long serialVersionUID = 1L;
     
     // Informações do Experimento
-    private int benchmark = 1;
-    private int numberOfAgents = 1;
-    private int numberOfMessages = 0;
-    private int messageSize = 1;
+    private int benchmark         = 1;
+    private int numberOfHosts     = 1;
+    private int numberOfSenders   = 1;
+    private int numberOfReceivers = 1;
+    private int numberOfMessages  = 0;
+    private int messageSize       = 1;
 
     private Node actualNode = null;
-    private int nReceivers = 0;
-    private int count = 0;
+    private int nReceivers  = 0;
+    private int count       = 0;
     public Writer writer;
 
     public SendBehaviour(Agent a, Object[] args) {
         super(a);
-        this.benchmark        = (int)args[0];
-        this.numberOfAgents   = (int)args[1];
-        this.numberOfMessages = (int)args[2];
-        this.messageSize      = (int)args[3];
-        this.nReceivers       = (int)args[4];
-        this.actualNode       = (Node)args[5];
-
-        Hashtable<Integer, String> ht = new Hashtable<Integer, String>(); 
-        ht.put(1, "NumberOfHosts");
-        ht.put(2, "NumberOfSender");
-        ht.put(3, "NumberOfPairs");
-        ht.put(4, "AgentsPerHost");
-        ht.put(5, "AgentsPerHost");
+        this.benchmark         = (int)args[0];
+        this.numberOfHosts     = (int)args[1];
+        this.numberOfSenders   = (int)args[2];
+        this.numberOfReceivers = (int)args[3];
+        this.numberOfMessages  = (int)args[4];
+        this.messageSize       = (int)args[5];
+        this.nReceivers        = (int)args[6];
+        this.actualNode        = (Node)args[7];
 
         if(myAgent.getLocalName().equals("S0")){
             try {
@@ -52,12 +49,19 @@ public class SendBehaviour extends CyclicBehaviour {
                     "results/"+
                     "Benchmark"+this.benchmark+"/"+
                     myAgent.getLocalName()+
-                    "_"+this.numberOfAgents+
+                    "_"+this.numberOfHosts+
+                    "_"+this.numberOfSenders+
+                    "_"+this.numberOfReceivers+
                     "_"+this.messageSize+
                     "_"+this.numberOfMessages+
                     ".csv"))); 
-                writer.write("Address,RTT,MessageSize,NumberOfMessages,"+
-                            ht.get(this.benchmark)+"\n");
+                writer.write("Address,"+
+                             "RTT,"+
+                             "MessageSize,"+
+                             "NumberOfMessages,"+
+                             "NumberOfHosts,"+
+                             "NumberOfSenders,"+
+                             "NumberOfReceivers\n");
             } 
             catch (IOException e) {
                 e.printStackTrace();
@@ -91,28 +95,44 @@ public class SendBehaviour extends CyclicBehaviour {
   
         count += 1;
         long start = System.currentTimeMillis();
-        myAgent.send(msg);
+        // myAgent.send(msg);
 
-        block();
-        ACLMessage reply = myAgent.receive(mt);
-        // while(reply == null) 
-        //     reply = myAgent.receive(mt);
-        if (reply != null) {
-            long end = System.currentTimeMillis();    
-            long result = end-start;
-            if(myAgent.getLocalName().equals("S0")){
-                try {
-                    writer.write(actualNode.Address+","+
-                                result+","+
-                                this.messageSize+","+
-                                this.numberOfMessages+","+
-                                this.numberOfAgents+"\n");
-                } 
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+        // block();
+        // ACLMessage reply = myAgent.receive(mt);
+        long end = System.currentTimeMillis();    
+        long result = end-start;
+        if(myAgent.getLocalName().equals("S0")){
+            try {
+                writer.write(actualNode.Address+","+
+                            result+","+
+                            this.messageSize+","+
+                            this.numberOfMessages+","+
+                            this.numberOfHosts+","+
+                            this.numberOfSenders+","+
+                            this.numberOfReceivers+"\n");
+            } 
+            catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        // if (reply != null) {
+        //     long end = System.currentTimeMillis();    
+        //     long result = end-start;
+        //     if(myAgent.getLocalName().equals("S0")){
+        //         try {
+        //             writer.write(actualNode.Address+","+
+        //                         result+","+
+        //                         this.messageSize+","+
+        //                         this.numberOfMessages+","+
+        //                         this.numberOfHosts+","+
+        //                         this.numberOfSenders+","+
+        //                         this.numberOfReceivers+"\n");
+        //         } 
+        //         catch (IOException e) {
+        //             e.printStackTrace();
+        //         }
+        //     }
+        // }
         if(count == numberOfMessages*nReceivers/2){
             System.out.println("Metade do Experimento: " + myAgent.getLocalName());
         }

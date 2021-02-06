@@ -28,17 +28,19 @@ public class SenderAgent extends Agent {
 		CircularLinkedList cll = new CircularLinkedList();
 
 		int benchmark 	     = Integer.parseInt(getArguments()[2].toString());
-        int agentType        = Integer.parseInt(getArguments()[3].toString());
-        int numberOfAgents   = Integer.parseInt(getArguments()[4].toString());
-		int messageSize      = Integer.parseInt(getArguments()[5].toString());
-		int numberOfMessages = Integer.parseInt(getArguments()[6].toString());
+		int agentType        = Integer.parseInt(getArguments()[3].toString());
+		int numberOfHosts   = Integer.parseInt(getArguments()[4].toString());
+		int numberOfSenders   = Integer.parseInt(getArguments()[5].toString());
+        int numberOfReceivers   = Integer.parseInt(getArguments()[6].toString());
+		int messageSize      = Integer.parseInt(getArguments()[7].toString());
+		int numberOfMessages = Integer.parseInt(getArguments()[8].toString());
 
 		if(benchmark == 1){
-			for(int i = 0; i < numberOfAgents; i++){
+			for(int i = 0; i < numberOfHosts; i++){
 				if(!String.valueOf(i).equals(indexPlat)){	
 					String receiver_host = String.valueOf(10+i);
 					String receiver_address = "http://10.0.1."+receiver_host+":"+port+"/acc";
-					String receiver_name = "R"+i+"@Platform"+i;
+					String receiver_name = "R0@Platform"+i;
 					cll.addNode(receiver_name, receiver_address);
 				}
 			}
@@ -51,9 +53,15 @@ public class SenderAgent extends Agent {
 			}
 			else{
 				if(benchmark == 3){
-					String receiver_name = "R"+indexName+"@Platform0";
-					String receiver_address = "http://10.0.1.10:"+port+"/acc";
-					cll.addNode(receiver_name, receiver_address);
+					for(int i = 0; i < numberOfReceivers; i++){
+						String receiver_name = "R"+i+"@Platform0";
+						String receiver_address = "http://10.0.1.10:"+port+"/acc";
+						cll.addNode(receiver_name, receiver_address);
+					}
+					// Uccomment the following lines to use only one receiver for each host of senders
+					// String receiver_name = "R"+indexPlat+"@Platform0";
+					// String receiver_address = "http://10.0.1.10:"+port+"/acc";
+					// cll.addNode(receiver_name, receiver_address);
 				}
 				else{
 					String receiver_name = "R"+indexName+"@Platform0";
@@ -63,15 +71,18 @@ public class SenderAgent extends Agent {
 			}	
 		}
 
-		// Node n = cll.getHead();
-		// for(int i = 0; i < cll.lenght(); i++){
-		// 	System.out.println(n.AID + " " +n.Address);
-		// 	n = n.nextNode;
-		// }
+		System.out.println("Endereços:");
+		Node n = cll.getHead();
+		for(int i = 0; i < cll.lenght(); i++){
+			System.out.println(n.AID + " " +n.Address);
+			n = n.nextNode;
+		}
 		
 		Object[] behavArgs = {
 			benchmark,
-			numberOfAgents,
+			numberOfHosts,
+			numberOfSenders,
+			numberOfReceivers,
 			numberOfMessages,
 			messageSize,
 			cll.lenght(), 
