@@ -95,44 +95,29 @@ public class SendBehaviour extends CyclicBehaviour {
   
         count += 1;
         long start = System.currentTimeMillis();
-        // myAgent.send(msg);
+        myAgent.send(msg);
 
-        // block();
-        // ACLMessage reply = myAgent.receive(mt);
-        long end = System.currentTimeMillis();    
-        long result = end-start;
-        if(myAgent.getLocalName().equals("S0")){
-            try {
-                writer.write(actualNode.Address+","+
-                            result+","+
-                            this.messageSize+","+
-                            this.numberOfMessages+","+
-                            this.numberOfHosts+","+
-                            this.numberOfSenders+","+
-                            this.numberOfReceivers+"\n");
-            } 
-            catch (IOException e) {
-                e.printStackTrace();
+        block();
+        ACLMessage reply = myAgent.receive(mt);
+        
+        if (reply != null) {
+            long end = System.currentTimeMillis();    
+            long result = end-start;
+            if(myAgent.getLocalName().equals("S0")){
+                try {
+                    writer.write(actualNode.Address+","+
+                                result+","+
+                                this.messageSize+","+
+                                this.numberOfMessages+","+
+                                this.numberOfHosts+","+
+                                this.numberOfSenders+","+
+                                this.numberOfReceivers+"\n");
+                } 
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        // if (reply != null) {
-        //     long end = System.currentTimeMillis();    
-        //     long result = end-start;
-        //     if(myAgent.getLocalName().equals("S0")){
-        //         try {
-        //             writer.write(actualNode.Address+","+
-        //                         result+","+
-        //                         this.messageSize+","+
-        //                         this.numberOfMessages+","+
-        //                         this.numberOfHosts+","+
-        //                         this.numberOfSenders+","+
-        //                         this.numberOfReceivers+"\n");
-        //         } 
-        //         catch (IOException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }
-        // }
         if(count == numberOfMessages*nReceivers/2){
             System.out.println("Metade do Experimento: " + myAgent.getLocalName());
         }
