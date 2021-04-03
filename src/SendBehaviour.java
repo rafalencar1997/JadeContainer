@@ -26,9 +26,10 @@ public class SendBehaviour extends CyclicBehaviour {
     private int numberOfMessages  = 0;
     private int messageSize       = 1;
 
-    private Node actualNode = null;
-    private int nReceivers  = 0;
-    private int count       = 0;
+    private Node actualNode  = null;
+    private int nReceivers   = 0;
+    private int messageIndex = 0;
+    private int count        = 0;
     public Writer writer;
 
     public SendBehaviour(Agent a, Object[] args) {
@@ -71,7 +72,7 @@ public class SendBehaviour extends CyclicBehaviour {
     }
 
     public static String randomString(int lenght){
-        String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder builder = new StringBuilder();
         while(lenght -- != 0){
             int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
@@ -81,19 +82,21 @@ public class SendBehaviour extends CyclicBehaviour {
     }
 
     public void action(){
-
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         AID receiver = new AID(actualNode.AID, AID.ISGUID);
         receiver.addAddresses(actualNode.Address);
         msg.addReceiver(receiver);
-        msg.setContent(randomString(this.messageSize));
+        String content = randomString(this.messageSize) + messageIndex;
+        messageIndex += 1;
+        msg.setContent(content);
 
         // set a template with receiver and performative
         MessageTemplate mp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
         MessageTemplate ms = MessageTemplate.MatchSender(receiver);
+        MessageTemplate mc = MessageTemplate.MatchContent(content);
         MessageTemplate mt = MessageTemplate.and(ms, mp);
+        mt = MessageTemplate.and(mt, mc);
   
-        count += 1;
         long start = System.currentTimeMillis();
         myAgent.send(msg);
 
@@ -101,6 +104,7 @@ public class SendBehaviour extends CyclicBehaviour {
         ACLMessage reply = myAgent.receive(mt);
         
         if (reply != null) {
+            count += 1;
             long end = System.currentTimeMillis();    
             long result = end-start;
             if(myAgent.getLocalName().equals("S0")){

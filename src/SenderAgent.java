@@ -16,7 +16,11 @@ public class SenderAgent extends Agent {
 		String name = getName().split("@")[0];
 		String platform = getName().split("@")[1];
 
-		String indexName = name.substring(name.length() - 1);
+		String indexName = name.substring(name.length() - 2);
+		if(indexName.charAt(0) == 'S'){
+			indexName = indexName.substring(1);
+		}
+
 		String indexPlat = platform.substring(platform.length() - 1);
 
 		String host = getArguments()[0].toString();
@@ -71,12 +75,12 @@ public class SenderAgent extends Agent {
 			}	
 		}
 
-		System.out.println("Endereços:");
-		Node n = cll.getHead();
-		for(int i = 0; i < cll.lenght(); i++){
-			System.out.println(n.AID + " " +n.Address);
-			n = n.nextNode;
-		}
+		// System.out.println("Endereços:");
+		// Node n = cll.getHead();
+		// for(int i = 0; i < cll.lenght(); i++){
+		// 	System.out.println(n.AID + " " +n.Address);
+		// 	n = n.nextNode;
+		// }
 		
 		Object[] behavArgs = {
 			benchmark,
