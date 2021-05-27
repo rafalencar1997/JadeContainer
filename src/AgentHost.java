@@ -69,13 +69,16 @@ public class AgentHost{
 
     public static void main(String[] args) {
 
+        String[] argumentos = args[0].split(" ");
+
         String ip             = System.getenv("HOST_IP");
         String port           = System.getenv("HOST_PORT");
         int index             = Integer.parseInt(ip.substring(ip.length()-2));
-        int benchmark         = Integer.parseInt(args[0]);
-        int numberOfHosts     = Integer.parseInt(args[1]);
-        int numberOfSenders   = Integer.parseInt(args[2]);
-        int numberOfReceivers = Integer.parseInt(args[3]);
+        int benchmark         = Integer.parseInt(argumentos[0]);
+        int numberOfHosts     = Integer.parseInt(argumentos[1]);
+        int numberOfSenders   = Integer.parseInt(argumentos[2]);
+        int numberOfReceivers = Integer.parseInt(argumentos[3]);
+
         
         int agentType = 0;
         int numberOfAgents = numberOfReceivers;
@@ -94,7 +97,7 @@ public class AgentHost{
             numberOfAgents = 1;
         }
 
-        String[] arguments = {ip, port, args[0], Integer.toString(agentType), args[1] , args[2] , args[3], args[4], args[5]};
+        String[] arguments = {ip, port, argumentos[0], Integer.toString(agentType), argumentos[1] , argumentos[2] , argumentos[3], argumentos[4], argumentos[5]};
         ContainerController cc = createPlatform("Platform"+ip.substring(ip.length()-1));
         startAgents(cc, benchmark, agentType, numberOfAgents, arguments);
     }
