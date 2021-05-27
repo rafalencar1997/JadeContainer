@@ -1,23 +1,27 @@
 #!/bin/bash
 
-benchmark         = "2"
-numberOfSenders   = "1"
-numberOfReceivers = "1"
-numberOfHosts     = ["5", "10", "5", "20"]
-messageSize       = ["1", "10", "100", "1000"]
-numberOfMessages  = ["1", "10", "100", "1000"]
+benchmark="2"
+numberOfHosts="10 20 30 40 50"
+numberOfReceivers="1"
+numberOfSenders="10 20 30 40 50"
+messageSize="1 10 100 1000"
+numberOfMessages="1 10 100 1000"
+
+sudo docker kill jadeCont 
+sudo docker rm jadeCont
 
 echo "Benchmark: $benchmark"
+
+echo "Experimento: 1"
 for nh in numberOfHosts; 
 do
-    echo "Experimento: 1"
     sudo docker run -p 8080:7778 -t -d \
         -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
         -e HOST_PORT='8080' \
         --name jadeCont rafalencar18/jadecontainer
 
     sudo docker exec jadeCont java myAgents.AgentHost \
-    $benchmark $nh $numberOfSenders $numberOfReceivers "1" "1000" &
+    $benchmark $nh $nh $numberOfReceivers "1" "1000" &
 
     sleep 5m
 
@@ -27,9 +31,9 @@ do
     
 done
 
+echo "Experimento: 2"
 for ms in messageSize; 
 do
-    echo "Experimento: 2"
     sudo docker run -p 8080:7778 -t -d \
         -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
         -e HOST_PORT='8080' \
@@ -46,9 +50,9 @@ do
     
 done
 
+echo "Experimento: 3"
 for nm in numberOfMessages; 
 do
-    echo "Experimento: 3"
     sudo docker run -p 8080:7778 -t -d \
         -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
         -e HOST_PORT='8080' \

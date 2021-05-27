@@ -1,9 +1,9 @@
 #!/bin/bash
 
 benchmark="1"
-numberOfSenders="1"
-numberOfReceivers="1"
 numberOfHosts="5 10 15 20"
+numberOfReceivers="1"
+numberOfSenders="1"
 messageSize="1 10 100 1000"
 numberOfMessages="1 10 100 1000"
 
