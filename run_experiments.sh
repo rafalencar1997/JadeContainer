@@ -68,23 +68,37 @@ declare -a teste=(
 "5 1 100 100 1 1000"
 )
 
+sudo su
+
+sudo docker pull rafalencar18/jadecontainer
+
 sudo docker kill jadeCont 
 sudo docker rm jadeCont
 
 for t in "${teste[@]}";
 do
-    echo "$t"
-    sudo docker run -p 8080:7778 -t -d \
-    -e "HOST_IP=$(ip -4 addr show wlp7s0 | grep -Po 'inet \K[\d.]+')" \
-    -e HOST_PORT='8080' \
-    --name jadeCont rafalencar18/jadecontainer
+    HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')
 
-    command sudo docker exec jadeCont java myAgents.AgentHost \
-    "$teste" &>> output.txt
-    
-    sleep 5m
+    nmchine=$((${t:2:2}+10))
 
-    sudo docker cp -a jadeCont:/jade/bin/results .
-    sudo docker kill jadeCont 
-    sudo docker rm jadeCont
+    if [ ${HOST_IP: -2} -le $nmchine ]
+    then
+        echo "Experimento com parâmetros |$t| será executado"
+        sudo docker run -p 8080:7778 -t -d \
+        -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
+        -e HOST_PORT='8080' \
+        --name jadeCont rafalencar18/jadecontainer
+
+        command sudo docker exec jadeCont java myAgents.AgentHost \
+        "$teste" &>> output.txt
+        
+        sleep 5m
+
+        sudo docker cp -a jadeCont:/jade/bin/results .
+        sudo docker kill jadeCont 
+        sudo docker rm jadeCont
+    else
+        echo "Esta máquina será desligada"
+        shutdown
+    fi
 done
