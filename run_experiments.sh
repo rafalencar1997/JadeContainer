@@ -68,7 +68,13 @@ declare -a teste=(
 "5 1 100 100 1 1000"
 )
 
-sudo su
+sudo yum update -y
+
+sudo amazon-linux-extras install docker -y
+
+sudo usermod -a -G docker ec2-user
+
+sudo service docker start
 
 sudo docker pull rafalencar18/jadecontainer
 
@@ -89,7 +95,7 @@ do
         -e HOST_PORT='8080' \
         --name jadeCont rafalencar18/jadecontainer
 
-        command sudo docker exec jadeCont java myAgents.AgentHost \
+        sudo command docker exec jadeCont java myAgents.AgentHost \
         "$teste" &>> output.txt
         
         sleep 5m
@@ -99,6 +105,6 @@ do
         sudo docker rm jadeCont
     else
         echo "Esta máquina será desligada"
-        shutdown
+        sudo shutdown
     fi
 done
