@@ -81,7 +81,9 @@ Essas variáveis são respectivamente o IP e Porta que servirão de endereço pa
 ## AWS 
 
 ### Instâncias EC2 e VPC
-Iremos criar instâncias EC2 na AWS, que devem estar na mesma VPC. 
+Iremos criar instâncias EC2 na AWS, que devem estar na mesma Subrede dentro de uma VPC. 
+
+Para isso, criamos uma VPC, um SubNet com IPv4 CIDR 10.0.1.0/24. Depois associamos uma RouteTable para essa SubNet para que as máquinas tenham acesso a internet via ssh, e para que elas possam se comunicar entre si por qualquer porta.
 
 Para a comunicação entre os agentes funcionar e para que eles possam se encontrar mesmo em hosts distintos, iremos utilizar o IP interno no endereço dos agentes. Para isso, eles devem todos possuir o IP do tipo 10.0.1.X, onde X inicia em 10.
 
