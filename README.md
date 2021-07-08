@@ -2,20 +2,18 @@
 
 ## Instalações
 
-### Instalando e rodando JADE
+Para esse projeto é necessário ter instalado JAVA e a biblioteca JADE
 
-
+Após instalação do JADE, é preciso indicar seu path na variável de ambiente CLASSPATH
 ```
 export CLASSPATH=~/jade/lib/jade.jar:$CLASSPATH
-
-
+```
+Para rodar o jade bastar rodar o comando a seguir:
+```
 java jade.Boot -gui
 ```
 
-### Instalando e rodando Docker
-
-
-Comandos úteis:
+Outra ferramenta necessária é o docker. Abaixo temos um comando que pode ser útil após sua instalação:
 ```
 sudo systemctl unmask docker
 ```
@@ -35,7 +33,6 @@ E por fim, podemos entrar dentro do container com o seguinte comando:
 ```
 docker exec -it container /bin/bash 
 ```
-
 
 ## Rodando os agentes Sender e Receiver dentro do Container
 
@@ -67,8 +64,32 @@ java jade.Boot -agents 'R:ReceiverAgent' -platform-id Platform2
 ### Sniffer Agent 
 -agents 'mySniffer:jade.tools.sniffer.Sniffer'
 
-### AWS 
+### Agent Host
 
+Para faciliar a execução dos experimentos, foi criado um programa AgentHost que irá receber certos parâmetros do experimentos e inicializar os agentes sender e receiver necessários para a execução.
+
+O comando java abaixo cria os agentes nas máquinas de acordo com os parâmetros listados:
+
+```
+java myAgents.AgentHost BENCHMARK NUMBEROFHOSTS NUMBEROFRECEIVERAGENTS NUMBEROFSENDERAGENTS MESSAGESIZE NUMBEROFMESSAGES
+```
+
+Vale lembrar que antes disso, duas variáveis de ambientes precisam ser setadas: HOST_IP e HOST_PORT
+
+Essas variáveis são respectivamente o IP e Porta que servirão de endereço para os agentes em diferentes hosts se comunicarem.
+
+## AWS 
+
+### Instâncias EC2 e VPC
+Iremos criar instâncias EC2 na AWS, que devem estar na mesma VPC. 
+
+Para a comunicação entre os agentes funcionar e para que eles possam se encontrar mesmo em hosts distintos, iremos utilizar o IP interno no endereço dos agentes. Para isso, eles devem todos possuir o IP do tipo 10.0.1.X, onde X inicia em 10.
+
+Esse setup do endereço IP é importante, pois dependendo do IP, teremos configurações diferentes dos agentes instânciados as máquinas.
+
+Exemplo: no benchmark 2, apenas um dos hosts terá um agente do tipo **receiver**, en quanto os outros terão agentes do tipo **sender**. Neste caso, o host com IP 10.0.1.10 terá o receiver, enquanto aquelas com IP 10.0.1.X, com X>10 terão os agentes sender.
+
+### Setup das instâncias
 Instale o docker nas instâncias com o seguinte comando:
 ```
 sudo yum update -y
@@ -83,10 +104,7 @@ sudo service docker start
 alias cls="clear"
 sudo docker pull rafalencar18/jadecontainer
 cls
-
 ```
-
-
 
 ## Script para rodar os experimentos:
 
@@ -100,8 +118,20 @@ cls
 
 5. Rodar comando do AgentHost no container
 
+6. Copiar arquivos .csv do container para o host
+```
+docker cp jadeCont:/jade/bin/results results
+```
 
-Facilitando minha vida
+7. Copiar arquivos .csv do host aws para máquina local
+```
+scp -r -i myKeyForJade.pem ec2-user@18.216.22.193:results results
+```
+
+8. Voltar para o passo 4 e iniciar um novo experimento
+
+
+O loop dos passos 4 a 8 se encontra abaixo:
 ```
 sudo docker cp -a jadeCont:/jade/bin/results .
 sudo docker kill jadeCont 
@@ -111,53 +141,36 @@ sudo docker run -p 8080:7778 -t -d \
     -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
     -e HOST_PORT='8080' \
     --name jadeCont rafalencar18/jadecontainer
-sudo docker exec -it jadeCont java myAgents.AgentHost "2" "9" "1000" "4000"
+sudo docker exec -it jadeCont java myAgents.AgentHost "1" "32" "1" "1" "1" "1000"
 
 ```
-```
-sudo docker exec -it jadeCont java myAgents.AgentHost "1" "0" "2" "1" "1000"
-```
-8. Copiar arquivos .csv do container para o host
-```
-docker cp jadeCont:/jade/bin/results results
-```
 
-9. Copiar arquivos .csv do host aws para máquina local
-```
-scp -r -i myKeyForJade.pem ec2-user@18.216.22.193:results results
-```
-```
-java myAgents.AgentHost IP PORT BENCHMARK AGENTTYPE NUMBEROFAGENTS MESSAGESIZE NUMBEROFMESSAGES INDEX*
-```
 ## Benchmark 1
 ```
 # Rodar em N hosts 
-java myAgents.AgentHost "1" "N" "1" "1000" 
+java myAgents.AgentHost "1" "NH" "1" "1" "MS" "NM" 
 ```
 ## Benchmark 2
 ```
 # Rodar em N hosts (senders)
-java myAgents.AgentHost "2" "N" "1" "1000" 
+java myAgents.AgentHost  "2" "NH" "1" "NSA" "MS" "NM"  
 ```
 
 ## Benchmark 3
 ```
 # Rodar em N hosts (senders) 
-java myAgents.AgentHost "3" "N" "1" "1000"
+java myAgents.AgentHost "3" "NH" "NRA" "NSA" "MS" "NM"  
 ```
 
 ## Benchmark 4
-Para o primeiro experimento:
+Para conversa interplataforma:
 ```
-# Rodar em um host 
-java myAgents.AgentHost "4" "N" "1" "1000"
+java myAgents.AgentHost "4" "2" "NSA" "MS" "NM"
 ```
-Para o segundo experimento:
+Para conversa intraplataforma:
 ```
-# Rodar em um host (sender)
-java myAgents.AgentHost "5" "N" "1" "1000" 
+java myAgents.AgentHost "5" "1" "NRA" "NSA" "MS" "NM"
 ```
-
 
 ## Lista com links úteis:
 - [First programs in JADE](https://www.iro.umontreal.ca/~vaucher/Agents/Jade/primer2.html);
