@@ -71,7 +71,7 @@ Para faciliar a execução dos experimentos, foi criado um programa AgentHost qu
 O comando java abaixo cria os agentes nas máquinas de acordo com os parâmetros listados:
 
 ```
-java myAgents.AgentHost BENCHMARK NUMBEROFHOSTS NUMBEROFRECEIVERAGENTS NUMBEROFSENDERAGENTS MESSAGESIZE NUMBEROFMESSAGES
+java myAgents.AgentHost BENCHMARK NUMBEROFHOSTS NUMBEROFSENDERAGENTS NUMBEROFRECEIVERAGENTS MESSAGESIZE NUMBEROFMESSAGES
 ```
 
 Vale lembrar que antes disso, duas variáveis de ambientes precisam ser setadas: HOST_IP e HOST_PORT

@@ -50,19 +50,15 @@ public class SendBehaviour extends CyclicBehaviour {
                     "results/"+
                     "Benchmark"+this.benchmark+"/"+
                     myAgent.getLocalName()+
+                    "_"+this.benchmark+
                     "_"+this.numberOfHosts+
                     "_"+this.numberOfSenders+
                     "_"+this.numberOfReceivers+
                     "_"+this.messageSize+
                     "_"+this.numberOfMessages+
+                    "_"+System.currentTimeMillis()+
                     ".csv"))); 
-                writer.write("Address,"+
-                             "RTT,"+
-                             "MessageSize,"+
-                             "NumberOfMessages,"+
-                             "NumberOfHosts,"+
-                             "NumberOfSenders,"+
-                             "NumberOfReceivers\n");
+                writer.write("RTT\n");
             } 
             catch (IOException e) {
                 e.printStackTrace();
@@ -109,13 +105,7 @@ public class SendBehaviour extends CyclicBehaviour {
             long result = end-start;
             if(myAgent.getLocalName().equals("S0")){
                 try {
-                    writer.write(actualNode.Address+","+
-                                result+","+
-                                this.messageSize+","+
-                                this.numberOfMessages+","+
-                                this.numberOfHosts+","+
-                                this.numberOfSenders+","+
-                                this.numberOfReceivers+"\n");
+                    writer.write(result+"\n");
                 } 
                 catch (IOException e) {
                     e.printStackTrace();

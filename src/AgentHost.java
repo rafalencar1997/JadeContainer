@@ -78,7 +78,6 @@ public class AgentHost{
         int numberOfHosts     = Integer.parseInt(argumentos[1]);
         int numberOfSenders   = Integer.parseInt(argumentos[2]);
         int numberOfReceivers = Integer.parseInt(argumentos[3]);
-
         
         int agentType = 0;
         int numberOfAgents = numberOfReceivers;
