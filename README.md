@@ -129,7 +129,7 @@ docker cp jadeCont:/jade/bin/results results
 
 7. Copiar arquivos .csv do host aws para máquina local
 ```
-scp -r -i myKeyForJade.pem ec2-user@18.216.22.193:results results
+scp -r -i myKeyForJade.pem ec2-user@3.141.0.67:results results
 ```
 
 8. Voltar para o passo 4 e iniciar um novo experimento
@@ -145,9 +145,25 @@ sudo docker run -p 8080:7778 -t -d \
     -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
     -e HOST_PORT='8080' \
     --name jadeCont rafalencar18/jadecontainer
-sudo docker exec -it jadeCont java myAgents.AgentHost "1" "32" "1" "1" "1" "1000"
+sudo docker exec -d jadeCont java myAgents.AgentHost "5 1 100 100 100 1000"
+
 
 ```
+- "5 1 100 100 1 1000"
+- "5 1 1000 1000 1 1000"
+- "5 1 10000 10000 1 1000"
+- "5 1 100 100 10 1000"
+- "5 1 100 100 100 1000"
+- "5 1 100 100 1000 1000"
+- <s>"5 1 100 100 1 1"</s>
+- <s>"5 1 100 100 1 10"</s>
+- <s>"5 1 100 100 1 100"</s>
+- <s>"5 1 20 20 1 1000"</s>
+- <s>"5 1 40 40 1 1000"</s>
+- <s>"5 1 60 60 1 1000"</s>
+- <s>"5 1 1 1 1 1000"</s>
+- <s>"5 1 10 10 1 1000"</s>
+
 
 ## Benchmark 1
 ```

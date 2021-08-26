@@ -81,9 +81,10 @@ sudo docker pull rafalencar18/jadecontainer
 sudo docker kill jadeCont 
 sudo docker rm jadeCont
 
+HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')
+
 for t in "${teste[@]}";
 do
-    HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')
 
     nmchine=$((${t:2:2}+10-1))
 

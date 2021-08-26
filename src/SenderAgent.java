@@ -31,13 +31,16 @@ public class SenderAgent extends Agent {
 		System.out.println("All my info: \n" + getAID());
 		CircularLinkedList cll = new CircularLinkedList();
 
-		int benchmark 	     = Integer.parseInt(getArguments()[2].toString());
-		int agentType        = Integer.parseInt(getArguments()[3].toString());
-		int numberOfHosts   = Integer.parseInt(getArguments()[4].toString());
+		int benchmark 	      = Integer.parseInt(getArguments()[2].toString());
+		int agentType         = Integer.parseInt(getArguments()[3].toString());
+		int numberOfHosts     = Integer.parseInt(getArguments()[4].toString());
 		int numberOfSenders   = Integer.parseInt(getArguments()[5].toString());
-        int numberOfReceivers   = Integer.parseInt(getArguments()[6].toString());
-		int messageSize      = Integer.parseInt(getArguments()[7].toString());
-		int numberOfMessages = Integer.parseInt(getArguments()[8].toString());
+        int numberOfReceivers = Integer.parseInt(getArguments()[6].toString());
+		int messageSize       = Integer.parseInt(getArguments()[7].toString());
+		int numberOfMessages  = Integer.parseInt(getArguments()[8].toString());
+		boolean henrique      = Boolean.parseBoolean(getArguments()[9].toString());
+
+		System.out.println(henrique);
 
 		if(benchmark == 1){
 			for(int i = 0; i < numberOfHosts; i++){
@@ -75,12 +78,12 @@ public class SenderAgent extends Agent {
 			}	
 		}
 
-		// System.out.println("Endereços:");
-		// Node n = cll.getHead();
-		// for(int i = 0; i < cll.lenght(); i++){
-		// 	System.out.println(n.AID + " " +n.Address);
-		// 	n = n.nextNode;
-		// }
+		// // System.out.println("Endereços:");
+		// // Node n = cll.getHead();
+		// // for(int i = 0; i < cll.lenght(); i++){
+		// // 	System.out.println(n.AID + " " +n.Address);
+		// // 	n = n.nextNode;
+		// // }
 		
 		Object[] behavArgs = {
 			benchmark,
@@ -90,7 +93,8 @@ public class SenderAgent extends Agent {
 			numberOfMessages,
 			messageSize,
 			cll.lenght(), 
-			cll.getHead()
+			cll.getHead(),
+			henrique
 		};
 		
 		addBehaviour(new SendBehaviour(this, behavArgs));		

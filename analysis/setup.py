@@ -71,5 +71,28 @@ def plot_results(df, title, x_label, x_column, yerror=False, legentOut=False, lo
     if logScale:
         plt.yscale = "log"
     plt.show()
+    
+def plot_results2(dfs, title, x_label, x_column, legend, yerror=False, legentOut=False, logScale=False):
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.set_ylabel('Média de RTT (ms)\n', fontsize=16)
+    ax.set_xlabel('\n'+x_label, fontsize=16)
+    
+    for df in dfs:
+        if yerror:
+            plt.errorbar(df[x_column], df['RTT_mean'], fmt='--s')
+        else:
+            plt.errorbar(df[x_column], df['RTT_mean'], fmt='--s')
+        
+    if logScale:
+        ax.set_xscale('log')
+    if legentOut:
+        ax.legend(legend, loc='upper right', bbox_to_anchor=(1.36 , 1.015), fontsize=12)
+    else:
+        ax.legend(legend, fontsize=12)
+    fig.tight_layout()
+    if logScale:
+        plt.yscale = "log"
+    plt.show() 
         
     

@@ -25,6 +25,7 @@ public class SendBehaviour extends CyclicBehaviour {
     private int numberOfReceivers = 1;
     private int numberOfMessages  = 0;
     private int messageSize       = 1;
+    private boolean henrique      = false;
 
     private Node actualNode  = null;
     private int nReceivers   = 0;
@@ -42,6 +43,7 @@ public class SendBehaviour extends CyclicBehaviour {
         this.messageSize       = (int)args[5];
         this.nReceivers        = (int)args[6];
         this.actualNode        = (Node)args[7];
+        this.henrique          = (Boolean)args[8];
 
         if(myAgent.getLocalName().equals("S0")){
             try {
@@ -89,9 +91,11 @@ public class SendBehaviour extends CyclicBehaviour {
         // set a template with receiver and performative
         MessageTemplate mp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
         MessageTemplate ms = MessageTemplate.MatchSender(receiver);
-        MessageTemplate mc = MessageTemplate.MatchContent(content);
         MessageTemplate mt = MessageTemplate.and(ms, mp);
-        mt = MessageTemplate.and(mt, mc);
+        if(this.henrique == false){
+            MessageTemplate mc = MessageTemplate.MatchContent(content);
+            mt = MessageTemplate.and(mt, mc);
+        }
   
         long start = System.currentTimeMillis();
         myAgent.send(msg);
