@@ -17,11 +17,16 @@ def load_data(folder_path):
         df = pd.concat([df, set_dataframe(folder_path, files_list[i+1])])
     return df
 
+def string_to_bool(value):
+    if value == 'false':
+        return False
+    else:
+        return True
 
 def set_dataframe(path, filename):
     df = pd.read_csv(path+filename)
 
-    # AN_B_NH_NS_NR_MS_NM_TS.csv
+    # AN_B_NH_NS_NR_MS_NM_H_TS.csv
     parameters = filename.replace('.csv','').split('_')
     
     agent_number     = parameters[0]
@@ -31,7 +36,8 @@ def set_dataframe(path, filename):
     number_receivers = parameters[4]
     message_size     = parameters[5]
     number_messages  = parameters[6]
-    timestamp        = parameters[7]
+    henrique         = parameters[7]
+    timestamp        = parameters[8]
     
     df['Benchmark']       = benchmark
     df['NumberHosts']     = number_hosts
@@ -39,6 +45,7 @@ def set_dataframe(path, filename):
     df['NumberReceivers'] = number_receivers
     df['MessageSize']     = message_size
     df['NumberMessages']  = number_messages
+    df['Henrique']        = string_to_bool(henrique)
     
     df['RTT'] = pd.to_numeric(df['RTT'], downcast="integer")
     df['Benchmark'] = pd.to_numeric(df['Benchmark'], downcast="integer")
@@ -47,7 +54,6 @@ def set_dataframe(path, filename):
     df['NumberReceivers'] = pd.to_numeric(df['NumberReceivers'], downcast="integer")
     df['MessageSize'] = pd.to_numeric(df['MessageSize'], downcast="integer")
     df['NumberMessages'] = pd.to_numeric(df['NumberMessages'], downcast="integer")
-    
     
     return df
 

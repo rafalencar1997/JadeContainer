@@ -58,6 +58,7 @@ public class SendBehaviour extends CyclicBehaviour {
                     "_"+this.numberOfReceivers+
                     "_"+this.messageSize+
                     "_"+this.numberOfMessages+
+                    "_"+this.henrique+
                     "_"+System.currentTimeMillis()+
                     ".csv"))); 
                 writer.write("RTT\n");

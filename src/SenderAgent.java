@@ -40,8 +40,6 @@ public class SenderAgent extends Agent {
 		int numberOfMessages  = Integer.parseInt(getArguments()[8].toString());
 		boolean henrique      = Boolean.parseBoolean(getArguments()[9].toString());
 
-		System.out.println(henrique);
-
 		if(benchmark == 1){
 			for(int i = 0; i < numberOfHosts; i++){
 				if(!String.valueOf(i).equals(indexPlat)){	
