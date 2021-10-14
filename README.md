@@ -140,30 +140,22 @@ O loop dos passos 4 a 8 se encontra abaixo:
 sudo docker cp -a jadeCont:/jade/bin/results .
 sudo docker kill jadeCont 
 sudo docker rm jadeCont
-cls
+clear
 sudo docker run -p 8080:7778 -t -d \
     -e "HOST_IP=$(ip -4 addr show eth0 | grep -Po 'inet \K[\d.]+')" \
     -e HOST_PORT='8080' \
     --name jadeCont rafalencar18/jadecontainer
-sudo docker exec -d jadeCont java myAgents.AgentHost "5 1 100 100 100 1000"
+sudo docker exec jadeCont java myAgents.AgentHost "4 2 2 2 1 5 FALSE" --illegal-access=warn
 
 
 ```
-- "5 1 100 100 1 1000 false"
-- "5 1 1000 1000 1 1000 false"
-- "5 1 10000 10000 1 1000 false"
-- "5 1 100 100 10 1000"
-- "5 1 100 100 100 1000"
-- "5 1 100 100 1000 1000"
-- <s>"5 1 100 100 1 1"</s>
-- <s>"5 1 100 100 1 10"</s>
-- <s>"5 1 100 100 1 100"</s>
-- <s>"5 1 20 20 1 1000"</s>
-- <s>"5 1 40 40 1 1000"</s>
-- <s>"5 1 60 60 1 1000"</s>
-- <s>"5 1 1 1 1 1000"</s>
-- <s>"5 1 10 10 1 1000"</s>
-
+"1 3 1 1 1 1000 FALSE"
+"2 3 1 1 1 1000 FALSE"
+"2 3 5 1 1 1000 FALSE"
+"2 3 10 1 1 1000 FALSE"
+"3 3 1 1 1 1000 FALSE"
+"3 3 1 3 1 1000 FALSE"
+"4 2 60 60 1 1000 FALSE"
 
 ## Benchmark 1
 ```

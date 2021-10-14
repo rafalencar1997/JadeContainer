@@ -73,6 +73,7 @@ public class AgentHost{
 
         String ip             = System.getenv("HOST_IP");
         String port           = System.getenv("HOST_PORT");
+        port = "8080";
         int index             = Integer.parseInt(ip.substring(ip.length()-2));
         int benchmark         = Integer.parseInt(argumentos[0]);
         int numberOfHosts     = Integer.parseInt(argumentos[1]);

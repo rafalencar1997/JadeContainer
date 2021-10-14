@@ -95,6 +95,7 @@ public class SenderAgent extends Agent {
 			henrique
 		};
 		
-		addBehaviour(new SendBehaviour(this, behavArgs));		
+		addBehaviour(new SendBehaviour(this, behavArgs));
+		addBehaviour(new ReceiveBehaviour(this, behavArgs));			
 	}
 }

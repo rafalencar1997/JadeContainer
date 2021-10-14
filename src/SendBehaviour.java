@@ -1,20 +1,17 @@
 package myAgents;
 
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.core.AID;
 import java.sql.Timestamp;
 import java.util.Hashtable;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 
-public class SendBehaviour extends CyclicBehaviour {
+public class SendBehaviour extends Behaviour {
 
     private static final long serialVersionUID = 1L;
     
@@ -30,8 +27,6 @@ public class SendBehaviour extends CyclicBehaviour {
     private Node actualNode  = null;
     private int nReceivers   = 0;
     private int messageIndex = 0;
-    private int count        = 0;
-    public Writer writer;
 
     public SendBehaviour(Agent a, Object[] args) {
         super(a);
@@ -45,29 +40,7 @@ public class SendBehaviour extends CyclicBehaviour {
         this.actualNode        = (Node)args[7];
         this.henrique          = (Boolean)args[8];
 
-        if(myAgent.getLocalName().equals("S0")){
-            try {
-                writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(
-                    "results/"+
-                    "Benchmark"+this.benchmark+"/"+
-                    myAgent.getLocalName()+
-                    "_"+this.benchmark+
-                    "_"+this.numberOfHosts+
-                    "_"+this.numberOfSenders+
-                    "_"+this.numberOfReceivers+
-                    "_"+this.messageSize+
-                    "_"+this.numberOfMessages+
-                    "_"+this.henrique+
-                    "_"+System.currentTimeMillis()+
-                    ".csv"))); 
-                writer.write("RTT\n");
-            } 
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        myAgent.doWait(10000);
+        myAgent.doWait(5000);
     }
 
     public static String randomString(int lenght){
@@ -85,54 +58,18 @@ public class SendBehaviour extends CyclicBehaviour {
         AID receiver = new AID(actualNode.AID, AID.ISGUID);
         receiver.addAddresses(actualNode.Address);
         msg.addReceiver(receiver);
-        String content = randomString(this.messageSize) + messageIndex;
-        messageIndex += 1;
-        msg.setContent(content);
-
-        // set a template with receiver and performative
-        MessageTemplate mp = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-        MessageTemplate ms = MessageTemplate.MatchSender(receiver);
-        MessageTemplate mt = MessageTemplate.and(ms, mp);
-        if(this.henrique == false){
-            MessageTemplate mc = MessageTemplate.MatchContent(content);
-            mt = MessageTemplate.and(mt, mc);
-        }
-  
         long start = System.currentTimeMillis();
-        myAgent.send(msg);
-
-        block();
-        ACLMessage reply = myAgent.receive(mt);
+        String content =  String.valueOf(start) + "-" + this.messageIndex + "-"+randomString(this.messageSize);
+        System.out.println(this.messageIndex+")Receiver: " + receiver.getName() + " Sender:" + myAgent.getName()+ " Content" + content);
         
-        if (reply != null) {
-            count += 1;
-            long end = System.currentTimeMillis();    
-            long result = end-start;
-            if(myAgent.getLocalName().equals("S0")){
-                try {
-                    writer.write(result+"\n");
-                } 
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if(count == numberOfMessages*nReceivers/2){
-            System.out.println("Metade do Experimento: " + myAgent.getLocalName());
-        }
-        if(count >= numberOfMessages*nReceivers){
-
-            if(myAgent.getLocalName().equals("S0")){
-                try {
-                    writer.close();
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            myAgent.doDelete();
-            System.out.println("Fim do Experimento: " + myAgent.getLocalName());
-        }
+        msg.setContent(content);
+        msg.setConversationId(myAgent.getLocalName());
+        myAgent.send(msg);
+        this.messageIndex += 1;
         this.actualNode = this.actualNode.nextNode;
     }
+
+    public boolean done(){
+        return (this.messageIndex >= this.numberOfMessages*this.nReceivers);
+    };
 }
